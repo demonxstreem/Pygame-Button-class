@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+#
+# Licensing agreement:
+#   Do as thou wilt and harm none
+#
+#
+# -------- IMPORTS --------
 
 import pygame, itertools, time, sys
 from pygame.locals import *
