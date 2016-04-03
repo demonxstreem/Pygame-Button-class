@@ -51,7 +51,7 @@ class Button:
 
            Methods:
                draw()       :surface:  pygame surface:  --> draw button to surface
-               rendTxt()    :no args:                   --> renders button title
+               rendTxt()    :no args:                   --> renders/returns button title surf/rect
                getColors()  :    txt:            bool:  --> return title or button color
                getSurf()    :no args:                   --> return main surface
                getRect()    :no args:                   --> return main surface rect
