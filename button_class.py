@@ -25,6 +25,31 @@ BG_COLOR = COLORS[COL[170]]
 
 
 class Button:
+    """
+           Pygame Button class
+
+           Constructor accepts two optional positional arguments:
+               title:  string:  --> text to be displayed on button
+               size:    tuple:  --> button width & height
+               
+           and (?) optional keyword arguments:
+               align_text         string:  --> align title (left, center, right)
+               font_name          string:  --> title font name
+               font_size             int:  --> title font size
+               unselected          tuple:  --> button title (rgb) color
+               selected            tuple:  --> mouse over title (rgb) color
+               amount              float:  --> used to calc button highlight
+               button_color        tuple:  --> button (rgb) color
+               button_color_sel:   tuple:  --> mouse over button (rgb) color
+               highlight_button     bool:  --> if True highlight button on mouse over
+               shadow_color        tuple:  --> button shadow (rgb) color
+               offset              tuple:  --> used to calc shadow position
+               v_attr             string:  --> set virtual (x,y) attribute
+
+           Each button is assigned a unique identifier and tag.
+            (Useful for event handling)
+        """
+        
     nextid  = itertools.count().__next__
     hovered = False
     _clicked = None
