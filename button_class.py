@@ -62,26 +62,31 @@ class Button:
                getSurf()    :no args:                   --> return main surface
                getRect()    :no args:                   --> return main surface rect
                makeButton() :no args:                   --> return shadow and/or button surf/rect
-               clicked()    :no args:
+               clicked()    :no args:                   --> button last clicked timer
         """
-        
-    nextid  = itertools.count().__next__
-    hovered = False
-    _clicked = None
+    
+    nextid  = itertools.count().__next__ # yield id
+    hovered = False # (mouse over)
+    _clicked = None # timer
 
     def __init__(self, title='button', size=[60,20], **kwargs):
+        """ class constructor """
         
-        self.id = Button.nextid()
-        
-        if title == 'button':
+        self.id = Button.nextid() # get button id
+        # Useful for event handling
+
+        # set button title
+        if title == 'button': # use default
             self.title = '%s %i' % (title, self.id)
-        else: self.title = title
+        else: self.title = title # user selected title
 
-        self.tag = self.title
+        self.tag = self.title # set button tag
+        # Useful for event handling
 
-        self.size = size
-        self.pos = kwargs.get('pos', [0,0])
+        self.size = size # set button size
+        self.pos = kwargs.get('pos', [0,0]) # get pos / set default
 
+        # font arguments... get / set defaults
         self.align_text = kwargs.get('align_text', 'center')
         font_name = kwargs.get('font_name', None)
         font_size = kwargs.get('font_size', int(((size[0]+size[1])/3))-len(title))
@@ -89,23 +94,31 @@ class Button:
         self.font_selected = kwargs.get('selected', (225, 255, 255))
         self.font = pygame.font.SysFont(font_name, font_size)
 
+        # button arguments... get / set defaults
         amount = kwargs.get('amount', 1.5)
         self.button_color = kwargs.get('button_color', (70, 130, 180))
-        color = list(self.button_color)
-        self.button_color_sel = kwargs.get('button_color_sel', tuple([min(255, int(c*amount)) for c in color]))
+        color = list(self.button_color) # calculate (mouse over) button color using ....
+        self.button_color_sel = kwargs.get('button_color_sel', tuple([min(255, int(c*amount)) for c in color])) # ...list comp
         self.highlight_button = kwargs.get('highlight_button', False)
         self.shadow_color = kwargs.get('shadow_color', (99, 184, 255))
-        self.offset = kwargs.get('offset', [3,2])
-        self.v_attr = kwargs.get('v_attr', 'topleft')
+        self.offset = kwargs.get('offset', [3,2]) # shadow (x, y) offset... enter (0,0) to disable shadow
+        self.v_attr = kwargs.get('v_attr', 'topleft') # virtual attributes
 
+        # create main surf/rect
         self.getSurf()
         self.getRect()
 
 
     def draw(self, surface):
+        """ draws button on surface
+            one required argument:
+              surface:  pygame surface  --> button will be drawn to this surface
+        """
+        
         align = self.align_text
-        button = self.makeButton()
-        titleS, titleR = self.rendTxt()
+        button = self.makeButton() # get button/shasow surf/rect
+        titleS, titleR = self.rendTxt() # get title surf/rect
+        # set title text alignment
         if align == 'center': titleR.center = button[0][1].center
         elif align == 'left':
             titleR.left = button[0][1].left+4
@@ -113,22 +126,31 @@ class Button:
         elif align == 'right':
             titleR.right = button[0][1].right-4
             titleR.centery = button[0][1].centery
-        button[0][0].blit(titleS, titleR)
+        button[0][0].blit(titleS, titleR) # draw title on button surface
 
-        if len(button) == 2:
+        if len(button) == 2: # if shadow... draw shadow
             self.surf.blit(button[1][0], button[1][1])
-        self.surf.blit(button[0][0], button[0][1])
+        self.surf.blit(button[0][0], button[0][1]) # draw button
 
+        # draw final surf/rect on passed surface
         surface.blit(self.surf, self.rect)
 
 
     def rendTxt(self):
+        """ render and return button title surf/rect """
+        
         title_surf = self.font.render(self.title, True, self.getColors())
         return title_surf, title_surf.get_rect()
 
 
     def getColors(self, txt=True):
-        if self.hovered:
+        """ return button and/or text color
+            one optional argument:
+              txt:  bool  --> if True return font color
+                                else return button color
+        """
+        
+        if self.hovered: # (mouse over)
             if txt: return self.font_selected
             else:   return self.button_color_sel
         else:
@@ -137,18 +159,24 @@ class Button:
 
 
     def getSurf(self):
+        """ set base surface """
         size, offset = self.size, self.offset
-        if 0 not in offset:
+
+        if 0 not in offset: # if shadow is not disabled add offset value to surface size
             self.surf = pygame.Surface((size[0]+offset[0], size[1]+offset[1])).convert_alpha()
-            self.surf.fill((0,0,0,0))
+            self.surf.fill((0,0,0,0)) # convert to alpha and fill with transparency
         else:
+            # shadow disabled - set to size and convert
             self.surf = pygame.Surface(size).convert()
 
 
     def getRect(self):
+        """ set base rect """
+        
         pos, v_attr = self.pos, self.v_attr
         self.rect = self.surf.get_rect()
 
+        # use selected virtual attribute to set buttons position
         if   v_attr == 'center': self.rect.center = pos
         elif v_attr == 'topleft': self.rect.topleft = pos
         elif v_attr == 'topright': self.rect.topright = pos
@@ -157,35 +185,43 @@ class Button:
 
 
     def makeButton(self):
-        button=[]
+        """ return button/shadow surf/rect """
+        
+        button=[] # initialize button list
         size, offset = self.size, self.offset
         button_surf = pygame.Surface(size).convert()
-        if self.highlight_button:
+        # check if button highlighting is enabled
+        if self.highlight_button: # if so... get color
             button_surf.fill(self.getColors(False))
         else:
+            # else just set button color
             button_surf.fill(self.button_color)
         button_rect = button_surf.get_rect()
-        button.append([button_surf, button_rect])
+        button.append([button_surf, button_rect]) # add button to list
 
-        if 0 not in offset:
+        # check if shadow is disabled
+        if 0 not in offset: # if not create shadow surf/rect
             shadow_surf = pygame.Surface(size).convert()
             shadow_surf.fill(self.shadow_color)
-            shadow_rect = shadow_surf.get_rect()
+            shadow_rect = shadow_surf.get_rect() # set shadow position (button pos + offset)
             (x,y) = button_rect.topleft; (x,y) = (x+offset[0], y+offset[1])
             shadow_rect.topleft = (x,y)
-            button.append([shadow_surf, shadow_rect])
+            button.append([shadow_surf, shadow_rect]) # add shadow to list
 
-        return button
+        return button # return button list
 
 
     def clicked(self):
+        """ used to limit button click speed """
+        
         if not self._clicked:
-            self._clicked = pygame.time.get_ticks()
-            return False
+            self._clicked = pygame.time.get_ticks() # set timer
+            return False # allow click
         else:
+            # disable click until timer expires
             seconds = (pygame.time.get_ticks()-self._clicked)/1000
-            if seconds > .5: self._clicked = None
-        return True
+            if seconds > .5: self._clicked = None # timer expired - remove timer
+        return True # click disallowed
             
 
         
