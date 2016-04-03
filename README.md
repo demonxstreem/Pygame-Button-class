@@ -6,3 +6,8 @@ Example includes:
 	Custom events
 
 I will add better documentation when time permits.
+
+
+Color chart note:
+	Displays index numbers for assigning pygame
+	predefined colors
