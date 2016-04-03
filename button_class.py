@@ -32,7 +32,7 @@ class Button:
                title:  string:  --> text to be displayed on button
                size:    tuple:  --> button width & height
                
-           and (?) optional keyword arguments:
+           and (12)? optional keyword arguments:
                align_text         string:  --> align title (left, center, right)
                font_name          string:  --> title font name
                font_size             int:  --> title font size
@@ -48,6 +48,15 @@ class Button:
 
            Each button is assigned a unique identifier and tag.
             (Useful for event handling)
+
+           Methods:
+               draw()       :surface:  pygame surface:  --> draw button to surface
+               rendTxt()    :no args:                   --> renders button title
+               getColors()  :    txt:            bool:  --> return title or button color
+               getSurf()    :no args:                   --> return main surface
+               getRect()    :no args:                   --> return main surface rect
+               makeButton() :no args:                   --> return shadow and/or button surf/rect
+               clicked()    :no args:
         """
         
     nextid  = itertools.count().__next__
