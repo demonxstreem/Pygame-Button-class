@@ -100,8 +100,6 @@ def main():
             y += TILE_HEIGHT
     
     done = False
-    i = 0
-    j = 0
     mod = 0
     modKey = 'centered'
     MODDIC={K_0:0,K_1:1,K_2:2,K_3:3,K_4:4,K_5:5,K_6:6,K_7:7,K_8:8,K_9:9}
